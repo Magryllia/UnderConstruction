@@ -1,0 +1,21 @@
+#!/usr/bin/python
+import os
+import fcntl
+import time
+
+KIOCSOUND = 0x4B2F
+CLOCK_TICK_RATE = 1193180
+
+def beep(hz, len):
+    fd = os.open("/dev/console", os.O_WRONLY)
+    try:
+        fcntl.ioctl(fd, KIOCSOUND, CLOCK_TICK_RATE / hz)
+        try:
+            time.sleep(len)
+        finally:
+            fcntl.ioctl(fd, KIOCSOUND, 0)
+    finally:
+        os.close(fd)
+
+if __name__ == '__main__':
+    beep(440, 0.5)
